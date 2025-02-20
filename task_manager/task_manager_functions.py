@@ -5,7 +5,7 @@ from smolagents import tool
 from notion_client import Client
 import os
 from dotenv import load_dotenv
-from config import NOTION_CONFIG, TaskPriority, TaskStatus, SystemMetadata
+from task_manager.config import NOTION_CONFIG, TaskPriority, TaskStatus, SystemMetadata
 
 load_dotenv()
 NOTION_KEY = os.getenv("NOTION_KEY")
