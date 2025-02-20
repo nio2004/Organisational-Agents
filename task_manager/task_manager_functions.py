@@ -205,6 +205,118 @@ def send_reminders() -> Dict[str, Any]:
             "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         }
 
+@tool
+def get_tasks_by_priority(
+    priority: str
+) -> Dict[str, Any]:
+    """Retrieves tasks filtered by priority level
+    
+    Args:
+        priority: Priority level to filter tasks by (HIGH, MEDIUM, LOW)
+        
+    Returns:
+        Dict containing matching tasks and count
+    """
+    try:
+        if priority not in [getattr(TaskPriority, p) for p in dir(TaskPriority) if not p.startswith("_")]:
+            raise ValueError(f"Invalid priority: {priority}")
+
+        response = notion.databases.query(
+            database_id=database_id,
+            filter={
+                "property": "Priority",
+                "select": {"equals": priority}
+            },
+            sorts=[{
+                "property": "Due Date",
+                "direction": "ascending"
+            }]
+        )
+        
+        tasks = []
+        for page in response["results"]:
+            task = {
+                "id": page["id"],
+                "title": page["properties"]["Title"]["title"][0]["text"]["content"],
+                "status": page["properties"]["Status"]["select"]["name"],
+                "due_date": page["properties"]["Due Date"]["date"]["start"],
+                "priority": priority
+            }
+            tasks.append(task)
+        
+        return {
+            "status": "success",
+            "tasks": tasks,
+            "count": len(tasks),
+            "queried_by": current_user,
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e),
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+@tool
+def get_tasks_by_date(
+    date: str
+) -> Dict[str, Any]:
+    """Retrieves tasks for a specific date
+    
+    Args:
+        date: Date in YYYY-MM-DD format
+        
+    Returns:
+        Dict containing matching tasks and count
+    """
+    try:
+        # Validate date format
+        datetime.strptime(date, "%Y-%m-%d")
+        
+        response = notion.databases.query(
+            database_id=database_id,
+            filter={
+                "property": "Due Date",
+                "date": {"equals": date}
+            },
+            sorts=[{
+                "property": "Priority",
+                "select": {"direction": "descending"}
+            }]
+        )
+        
+        tasks = []
+        for page in response["results"]:
+            task = {
+                "id": page["id"],
+                "title": page["properties"]["Title"]["title"][0]["text"]["content"],
+                "status": page["properties"]["Status"]["select"]["name"],
+                "due_date": date,
+                "priority": page["properties"]["Priority"]["select"]["name"]
+            }
+            tasks.append(task)
+        
+        return {
+            "status": "success",
+            "tasks": tasks,
+            "count": len(tasks),
+            "queried_by": current_user,
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    except ValueError as ve:
+        return {
+            "status": "error",
+            "message": "Invalid date format. Use YYYY-MM-DD",
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e),
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
 def _get_user_id(email: str) -> Optional[str]:
     """Helper method to get Notion user ID from email
     
@@ -258,5 +370,5 @@ def generate_daily_report() -> Dict[str, Any]:
         return {
             "status": "error",
             "message": str(e),
-            "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%d %H:%:M:%S")
         }
