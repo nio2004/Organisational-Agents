@@ -1,0 +1,92 @@
+{
+  "Priority": {
+    "id": "Eqer",
+    "name": "Priority",
+    "type": "select",
+    "select": {
+      "options": [
+        {
+          "id": "~SPb",
+          "name": "Urgent",
+          "color": "red",
+          "description": null
+        },
+        {
+          "id": "~\\YB",
+          "name": "High",
+          "color": "yellow",
+          "description": null
+        },
+        {
+          "id": "dtzf",
+          "name": "Medium",
+          "color": "blue",
+          "description": null
+        },
+        {
+          "id": "GWHx",
+          "name": "Low",
+          "color": "gray",
+          "description": null
+        }
+      ]
+    }
+  },
+  "Description": {
+    "id": "QTEC",
+    "name": "Description",
+    "type": "rich_text",
+    "rich_text": {}
+  },
+  "Due Date": {
+    "id": "b%3FYk",
+    "name": "Due Date",
+    "type": "date",
+    "date": {}
+  },
+  "Status": {
+    "id": "fbfx",
+    "name": "Status",
+    "type": "select",
+    "select": {
+      "options": [
+        {
+          "id": "o|BQ",
+          "name": "Blocked",
+          "color": "red",
+          "description": null
+        },
+        {
+          "id": "19ec87c4-dfdd-4913-bbb3-d2e6bdf5459b",
+          "name": "Not Started",
+          "color": "default",
+          "description": null
+        },
+        {
+          "id": "90c369fc-e00b-4693-a3cc-1bc68182f871",
+          "name": "In Progress",
+          "color": "blue",
+          "description": null
+        },
+        {
+          "id": "af7415d1-1a9a-4e3a-9265-5dfc4514c6f3",
+          "name": "Completed",
+          "color": "green",
+          "description": null
+        }
+      ]
+    }
+  },
+  "Assignee": {
+    "id": "p%5Dmx",
+    "name": "Assignee",
+    "type": "people",
+    "people": {}
+  },
+  "Title": {
+    "id": "title",
+    "name": "Title",
+    "type": "title",
+    "title": {}
+  }
+}
