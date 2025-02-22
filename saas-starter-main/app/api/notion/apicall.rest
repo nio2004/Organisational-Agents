@@ -1,0 +1,37 @@
+### ✅ Get Notion Access Token (Store in Cookies)
+GET http://localhost:3000/api/notion/token
+Content-Type: application/json
+### ✅ Fetch TODO List (GET)
+GET http://localhost:3000/api/notion/content?pageId=1a119714-5c95-800c-ae14-c4f8112162d5
+Content-Type: application/json
+Cookie: notion_access_token=ntn_j68296613334bBF3EoNq1LdvTnRJQ6PwkFDPEGmFGCabzX
+### ✅ Add a New TODO (POST)
+POST http://localhost:3000/api/notion/content?pageId=1a119714-5c95-800c-ae14-c4f8112162d5
+Content-Type: application/json
+Cookie: notion_access_token=ntn_j68296613334bBF3EoNq1LdvTnRJQ6PwkFDPEGmFGCabzX
+
+{
+  "todoText": "Drink Water"
+}
+
+### ✅ Update a TODO (PATCH)
+PATCH http://localhost:3000/api/notion/content
+Content-Type: application/json
+
+{
+  "blockId": "YOUR_TODO_BLOCK_ID",
+  "newText": "Updated text",
+  "checked": true
+}
+
+### ✅ Delete a TODO (DELETE)
+DELETE http://localhost:3000/api/notion/content
+Content-Type: application/json
+
+{
+  "blockId": "YOUR_TODO_BLOCK_ID"
+}
+
+### ✅ Test CORS Preflight Request (OPTIONS)
+OPTIONS http://localhost:3000/api/notion/content
+Content-Type: application/json

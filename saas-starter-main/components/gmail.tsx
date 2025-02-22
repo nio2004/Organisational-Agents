@@ -1,10 +1,10 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, LogIn, LogOut, Mail } from "lucide-react";
+import { Loader2, LogIn, LogOut, Mail, RotateCw } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Gmail() {
@@ -22,15 +22,29 @@ export default function Gmail() {
     setLoading(false);
   };
 
-  
+  // Load emails automatically on page load
+  useEffect(() => {
+    if (session) fetchEmails();
+  }, [session]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100 dark:bg-gray-900">
       <Card className="w-full max-w-lg shadow-lg border border-gray-200 dark:border-gray-700">
-        <CardHeader className="text-center">
+        <CardHeader className="flex justify-between items-center">
           <CardTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             Gmail Inbox
           </CardTitle>
+          {session && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={fetchEmails}
+              disabled={loading}
+              className="hover:bg-gray-200 dark:hover:bg-gray-800"
+            >
+              <RotateCw className={`h-5 w-5 ${loading ? "animate-spin" : ""}`} />
+            </Button>
+          )}
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
           {session ? (
@@ -41,17 +55,6 @@ export default function Gmail() {
               <Button onClick={() => signOut()} variant="destructive" className="w-full">
                 <LogOut className="mr-2 h-5 w-5" />
                 Sign Out
-              </Button>
-              <Button onClick={fetchEmails} variant="default" className="w-full" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="animate-spin mr-2 h-5 w-5" /> Loading...
-                  </>
-                ) : (
-                  <>
-                    <Mail className="mr-2 h-5 w-5" /> Load Emails
-                  </>
-                )}
               </Button>
               <div className="w-full">
                 {emails.length > 0 ? (

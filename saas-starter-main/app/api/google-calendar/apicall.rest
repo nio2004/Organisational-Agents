@@ -1,0 +1,38 @@
+# 👉 1. Get List of Calendars
+GET http://localhost:3000/api/google-calendar
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+###
+
+# 👉 2. Add an Event to a Calendar
+POST http://localhost:3000/api/google-calendar
+Authorization: Bearer "ya29.a0AXeO80T5RjAoG3RnPw9S4XmUAyVS_JKaYKkB_Sb6yh4PcN3hNUW6FXYYvMNso4qWDBjXDrLR4SScovLbFWt071vJipbhDXONHP4EE1l64RVickZvbiajEwi6gwfaq8Fo2t-tx2b-3FoX5o0HjQnGbYaW4KkYkF3zrTlFzQmpaCgYKAUsSARISFQHGX2Mi8cf50a28Rb61QnVOzShplQ0175"
+Content-Type: application/json
+
+{
+  "calendarId": "primary",
+  "event": {
+    "summary": "Meeting with Team",
+    "location": "Google Meet",
+    "description": "Discuss project updates and roadmap.",
+    "start": {
+      "dateTime": "2025-02-22T10:00:00-05:00",
+      "timeZone": "America/New_York"
+    },
+    "end": {
+      "dateTime": "2025-02-22T11:00:00-05:00",
+      "timeZone": "America/New_York"
+    },
+    "attendees": [
+      { "email": "example@gmail.com" }
+    ],
+    "reminders": {
+      "useDefault": false,
+      "overrides": [
+        { "method": "email", "minutes": 30 },
+        { "method": "popup", "minutes": 10 }
+      ]
+    }
+  }
+}

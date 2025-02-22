@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { RefreshCw } from "lucide-react"; // Import refresh icon from lucide-react
 
 const NotionPagePreview = () => {
   const [notionPages, setNotionPages] = useState<any[]>([]);
   const [pageContent, setPageContent] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -19,6 +21,12 @@ const NotionPagePreview = () => {
     };
     fetchToken();
   }, []);
+
+  useEffect(() => {
+    if (notionPages.length > 0) {
+      fetchNotionContent(notionPages[0].id); // Automatically fetch first page content
+    }
+  }, [notionPages]);
 
   const fetchNotionPages = async () => {
     try {
@@ -35,6 +43,8 @@ const NotionPagePreview = () => {
   };
 
   const fetchNotionContent = async (pageId: string) => {
+    setLoading(true);
+    console.log("Fetching content for page ID:", pageId);
     try {
       const res = await fetch(`/api/notion/content?pageId=${pageId}`);
       const data = await res.json();
@@ -45,6 +55,13 @@ const NotionPagePreview = () => {
       }
     } catch (err) {
       setError("Error fetching content.");
+    }
+    setLoading(false);
+  };
+
+  const handleReload = () => {
+    if (notionPages.length > 0) {
+      fetchNotionContent(notionPages[0].id);
     }
   };
 
@@ -61,7 +78,12 @@ const NotionPagePreview = () => {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <h2 className="text-2xl font-semibold mb-4">Notion Page Preview</h2>
+      <div className="w-full max-w-2xl flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold">Notion Page Preview</h2>
+        <button onClick={handleReload} className="p-2 rounded-full bg-gray-200 hover:bg-gray-300">
+          <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+        </button>
+      </div>
 
       {!accessToken ? (
         <button
@@ -81,20 +103,6 @@ const NotionPagePreview = () => {
 
       {error && <p className="text-red-500 mt-2">{error}</p>}
 
-      {notionPages.length > 0 ? (
-        notionPages.map((page) => (
-          <button
-            key={page.id}
-            onClick={() => fetchNotionContent(page.id)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md mt-2"
-          >
-            Load Notion Content
-          </button>
-        ))
-      ) : (
-        <p className="text-gray-500">No Notion pages found.</p>
-      )}
-
       {/* Render Notion Page Content */}
       <div className="w-full max-w-2xl mt-6 p-4 border rounded-lg bg-gray-100">
         {pageContent.length > 0 ? (
@@ -106,6 +114,12 @@ const NotionPagePreview = () => {
               {block.type === "heading_3" && <h3 className="text-lg font-bold">{block.heading_3?.rich_text?.[0]?.text?.content}</h3>}
               {block.type === "bulleted_list_item" && <li>{block.bulleted_list_item?.rich_text?.[0]?.text?.content}</li>}
               {block.type === "numbered_list_item" && <ol>{block.numbered_list_item?.rich_text?.[0]?.text?.content}</ol>}
+              {block.type === "to_do" && (
+                <div className="flex items-center space-x-2">
+                  <input type="checkbox" checked={block.to_do?.checked} readOnly />
+                  <span>{block.to_do?.rich_text?.[0]?.text?.content}</span>
+                </div>
+              )}
             </div>
           ))
         ) : (
