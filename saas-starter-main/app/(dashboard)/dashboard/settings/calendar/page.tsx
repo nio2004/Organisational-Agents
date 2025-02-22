@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { fetchCalendarEvents } from '@/app/api/calendar/route';
+// import { fetchCalendarEvents } from '@/app/api/calendar/route';
 
 
 export default function CalendarEvents() {
@@ -8,8 +8,8 @@ export default function CalendarEvents() {
 
   useEffect(() => {
     const getEvents = async () => {
-      const events = await fetchCalendarEvents();
-      setEvents(events);
+      // const events = await fetchCalendarEvents();
+      // setEvents(events);
     };
     getEvents();
   }, []);
